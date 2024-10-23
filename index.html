@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+
+        body{
+            background-image: url('./pexels-thisbrandstudio-290220.jpg');
+            background-repeat: no-repeat;
+            background-clip: content-box;
+            background-size: cover;
+        }
+        .poço {
+            width: 300px;
+            height: 700px;
+            background: linear-gradient(0deg, #345, #123);
+            border-radius: 0% 0% 0 0;
+            position: relative;
+            margin: 20px auto;
+            border: 8px solid #567;
+            overflow: hidden;
+        }
+
+        .bandeja-enfeites {
+            background: #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        .enfeite {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            margin: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            z-index: 10;
+            position: absolute;
+        }
+
+        .pre-visualizacao-enfeite {
+            position: static;
+            display: inline-block;
+        }
+
+        .enfeite:hover {
+            transform: scale(1.1);
+        }
+
+        .enfeite.bola {
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff 5%, var(--cor) 60%);
+        }
+
+        .enfeite.estrela {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            background: radial-gradient(circle at center, #fff 5%, gold 60%);
+        }
+
+        .enfeite.presente {
+            background: var(--cor);
+            position: relative;
+        }
+
+        .enfeite.presente::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 6px;
+            background: white;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .enfeite.presente::after {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 6px;
+            background: white;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .enfeite-posicionado {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .agua {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(0deg, #4a90e2 0%, #357abd 100%);
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        @keyframes flutuar {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes cair {
+            0% { 
+                transform: translateY(var(--inicio-y)) rotate(0deg);
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(var(--fim-y)) rotate(360deg);
+                opacity: 0.9;
+            }
+        }
+
+        .caindo {
+            animation: cair 1s cubic-bezier(0.4, 0, 1, 1) forwards;
+        }
+
+        .flutuando {
+            animation: flutuar 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="bandeja-enfeites">
+        <button onclick="criarEnfeiteArrastavel('bola', '#ff0000')">Bola Vermelha</button>
+        <button onclick="criarEnfeiteArrastavel('bola', '#00ff00')">Bola Verde</button>
+        <button onclick="criarEnfeiteArrastavel('bola', '#0000ff')">Bola Azul</button>
+        <button onclick="criarEnfeiteArrastavel('estrela', 'gold')">Estrela</button>
+        <button onclick="criarEnfeiteArrastavel('presente', '#ff4444')">Presente Vermelho</button>
+        <button onclick="criarEnfeiteArrastavel('presente', '#44ff44')">Presente Verde</button>
+        <button onclick="resetarPoco()">Resetar Poço</button>
+    </div>
+    <div class="poço">
+        <div class="agua"></div>
+    </div>
+
+    <script>
+        let enfeiteArrastado = null;
+        let offsetX, offsetY;
+
+        function criarEnfeiteArrastavel(tipo, cor) {
+            // Remover qualquer enfeite arrastado existente
+            if (enfeiteArrastado) {
+                enfeiteArrastado.remove();
+            }
+
+            const enfeite = document.createElement('div');
+            enfeite.className = `enfeite ${tipo}`;
+            enfeite.style.setProperty('--cor', cor);
+            enfeite.setAttribute('data-tipo', tipo);
+            enfeite.setAttribute('data-cor', cor);
+            
+            document.body.appendChild(enfeite);
+            enfeiteArrastado = enfeite;
+
+            // Posição inicial próxima ao cursor
+            const e = window.event;
+            enfeite.style.left = (e.clientX - 20) + 'px';
+            enfeite.style.top = (e.clientY - 20) + 'px';
+
+            // Configurar manipuladores de arrasto
+            document.addEventListener('mousemove', lidarComArrasto);
+            document.addEventListener('mouseup', lidarComSoltar);
+        }
+
+        function lidarComArrasto(e) {
+            if (enfeiteArrastado) {
+                enfeiteArrastado.style.left = (e.clientX - 20) + 'px';
+                enfeiteArrastado.style.top = (e.clientY - 20) + 'px';
+            }
+        }
+
+        function lidarComSoltar(e) {
+            if (!enfeiteArrastado) return;
+
+            const poco = document.querySelector('.poço');
+            const pocoRect = poco.getBoundingClientRect();
+            const aguaRect = document.querySelector('.agua').getBoundingClientRect();
+            
+            // Verificar se foi solto dentro dos limites do poço
+            if (e.clientX >= pocoRect.left && 
+                e.clientX <= pocoRect.right && 
+                e.clientY >= pocoRect.top && 
+                e.clientY <= pocoRect.bottom) {
+                
+                const relativeX = Math.min(Math.max(e.clientX - pocoRect.left, 20), pocoRect.width - 40);
+                const relativeY = Math.min(Math.max(e.clientY - pocoRect.top, 20), pocoRect.height - 40);
+                
+                const enfeitePosicionado = document.createElement('div');
+                enfeitePosicionado.className = `enfeite ${enfeiteArrastado.getAttribute('data-tipo')} enfeite-posicionado`;
+                enfeitePosicionado.style.setProperty('--cor', enfeiteArrastado.getAttribute('data-cor'));
+                enfeitePosicionado.style.left = relativeX + 'px';
+                
+                // Se solto acima da água, iniciar animação de queda
+                if (e.clientY < aguaRect.top) {
+                    const inicioY = relativeY;
+                    const fimY = aguaRect.top - pocoRect.top - 20; // Ajustar para o tamanho do enfeite
+                    
+                    enfeitePosicionado.style.setProperty('--inicio-y', inicioY + 'px');
+                    enfeitePosicionado.style.setProperty('--fim-y', fimY + 'px');
+                    enfeitePosicionado.style.top = inicioY + 'px';
+                    enfeitePosicionado.classList.add('caindo');
+                    
+                    enfeitePosicionado.addEventListener('animationend', () => {
+                        enfeitePosicionado.style.top = fimY + 'px';
+                        enfeitePosicionado.classList.remove('caindo');
+                        enfeitePosicionado.classList.add('flutuando');
+                        const rotacaoAleatoria = Math.random() * 360;
+                        enfeitePosicionado.style.transform = `rotate(${rotacaoAleatoria}deg)`;
+                    });
+                } else {
+                    // Se solto na água, apenas adicionar animação de flutuação
+                    const nivelAgua = aguaRect.top - pocoRect.top - 20; // Ajustar para o tamanho do enfeite
+                    enfeitePosicionado.style.top = nivelAgua + 'px';
+                    enfeitePosicionado.classList.add('flutuando');
+                    const rotacaoAleatoria = Math.random() * 360;
+                    enfeitePosicionado.style.transform = `rotate(${rotacaoAleatoria}deg)`;
+                }
+                
+                poco.appendChild(enfeitePosicionado);
+            }
+            
+            // Limpar
+            enfeiteArrastado.remove();
+            enfeiteArrastado = null;
+            document.removeEventListener('mousemove', lidarComArrasto);
+            document.removeEventListener('mouseup', lidarComSoltar);
+        }
+
+        function resetarPoco() {
+            const poco = document.querySelector('.poço');
+            const agua = document.querySelector('.agua');
+            const enfeites = document.querySelectorAll('.enfeite-posicionado');
+            enfeites.forEach(enfeite => enfeite.remove());
+            poco.innerHTML = '';
+            poco.appendChild(agua);
+        }
+    </script>
+</body>
+</html>
