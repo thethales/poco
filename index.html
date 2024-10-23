@@ -277,6 +277,18 @@
             audio.play().catch(function (error) {
                 console.log("Playback prevented. User interaction required.", error);
             });
+
+            // Add event listener to all buttons to play music if not already playing
+            const buttons = document.querySelectorAll('.christmas-buttons-itens button');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (audio.paused) {
+                        audio.play().catch(function (error) {
+                            console.log("Playback prevented. User interaction required.", error);
+                        });
+                    }
+                });
+            });
         });
 
         function criarEnfeiteArrastavel(tipo, cor) {
