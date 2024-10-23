@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <style>
 
-        body{
+<head>
+    <title>Decore seu fundo do poço de Natal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
             background-image: url('./pexels-thisbrandstudio-290220.jpg');
             background-repeat: no-repeat;
             background-clip: content-box;
             background-size: cover;
         }
+
         .poço {
             width: 300px;
-            height: 700px;
+            height: 900px;
             background: linear-gradient(0deg, #345, #123);
             border-radius: 0% 0% 0 0;
-            position: relative;
+            position: absolute;
             margin: 20px auto;
             border: 8px solid #567;
             overflow: hidden;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .bandeja-enfeites {
-            background: #ddd;
+            background: #ddddddba;
+            z-index: 50000000;
             padding: 20px;
             text-align: center;
             border-radius: 10px;
-            margin: 20px;
+            position: relative;
+            z-index: 9999;
         }
 
         .enfeite {
@@ -103,6 +114,14 @@
             background: #45a049;
         }
 
+        .christmas-buttons,
+        .christmas-gif {
+            display: inline-block;
+            margin-top: auto;
+            margin-bottom: auto;
+
+        }
+
         .agua {
             position: absolute;
             bottom: 0;
@@ -113,18 +132,41 @@
             z-index: 1;
         }
 
+        .mountains-of-christmas-regular {
+            font-family: "Mountains of Christmas", serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: large;
+        }
+
+        .mountains-of-christmas-bold {
+            font-family: "Mountains of Christmas", serif;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+
         @keyframes flutuar {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-5px) rotate(2deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-5px) rotate(2deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
         }
 
         @keyframes cair {
-            0% { 
+            0% {
                 transform: translateY(var(--inicio-y)) rotate(0deg);
                 opacity: 1;
             }
-            100% { 
+
+            100% {
                 transform: translateY(var(--fim-y)) rotate(360deg);
                 opacity: 0.9;
             }
@@ -137,17 +179,90 @@
         .flutuando {
             animation: flutuar 3s ease-in-out infinite;
         }
+
+        .enfeite.emoji.llama {
+            font-size: 40px;
+            content: "🦙";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .enfeite.emoji.pinhata {
+            font-size: 40px;
+            content: "🪅";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .neve {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        .flake {
+            position: absolute;
+            top: -10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(calc(100vh + 20px)) rotate(360deg);
+            }
+        }
     </style>
 </head>
+
 <body>
+    <audio id="background-music" autoplay loop>
+        <source
+            src="https://cdn.pixabay.com/download/audio/2022/11/12/audio_46d158e426.mp3?filename=jingle-bells-rock-energetic-positive-upbeat-happy-christmas-party-125676.mp3"
+            type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
     <div class="bandeja-enfeites">
-        <button onclick="criarEnfeiteArrastavel('bola', '#ff0000')">Bola Vermelha</button>
-        <button onclick="criarEnfeiteArrastavel('bola', '#00ff00')">Bola Verde</button>
-        <button onclick="criarEnfeiteArrastavel('bola', '#0000ff')">Bola Azul</button>
-        <button onclick="criarEnfeiteArrastavel('estrela', 'gold')">Estrela</button>
-        <button onclick="criarEnfeiteArrastavel('presente', '#ff4444')">Presente Vermelho</button>
-        <button onclick="criarEnfeiteArrastavel('presente', '#44ff44')">Presente Verde</button>
-        <button onclick="resetarPoco()">Resetar Poço</button>
+        <div class="christmas-gif">
+            <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmVmc2w4NXpmNXhyaWU0NHdteTJoYWtwaDB6eHNtc2g2djZsZHZzbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/3ksOEZckWJ3TY0hJFy/giphy.webp"
+                width="100">
+        </div>
+        <div class="christmas-buttons">
+            <div class="christmas-buttons-title ">
+                <h1 class="mountains-of-christmas-bold">Decore seu fundo do poço de Natal</h1>
+            </div>
+
+            <div class="christmas-buttons-itens">
+                <button onclick="criarEnfeiteArrastavel('bola', '#ff0000')" class="mountains-of-christmas-regular">Bola
+                    Vermelha</button>
+                <button onclick="criarEnfeiteArrastavel('bola', '#00ff00')" class="mountains-of-christmas-regular">Bola
+                    Verde</button>
+                <button onclick="criarEnfeiteArrastavel('bola', '#0000ff')" class="mountains-of-christmas-regular">Bola
+                    Azul</button>
+                <button onclick="criarEnfeiteArrastavel('estrela', 'gold')"
+                    class="mountains-of-christmas-regular">Estrela</button>
+                <button onclick="criarEnfeiteArrastavel('presente', '#ff4444')"
+                    class="mountains-of-christmas-regular">Presente Vermelho</button>
+                <button onclick="criarEnfeiteArrastavel('presente', '#44ff44')"
+                    class="mountains-of-christmas-regular">Presente Verde</button>
+                <button onclick="resetarPoco()" class="mountains-of-christmas-regular">Resetar Poço</button>
+
+            </div>
+        </div>
+
     </div>
     <div class="poço">
         <div class="agua"></div>
@@ -156,6 +271,13 @@
     <script>
         let enfeiteArrastado = null;
         let offsetX, offsetY;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const audio = document.getElementById("background-music");
+            audio.play().catch(function (error) {
+                console.log("Playback prevented. User interaction required.", error);
+            });
+        });
 
         function criarEnfeiteArrastavel(tipo, cor) {
             // Remover qualquer enfeite arrastado existente
@@ -168,7 +290,7 @@
             enfeite.style.setProperty('--cor', cor);
             enfeite.setAttribute('data-tipo', tipo);
             enfeite.setAttribute('data-cor', cor);
-            
+
             document.body.appendChild(enfeite);
             enfeiteArrastado = enfeite;
 
@@ -195,31 +317,31 @@
             const poco = document.querySelector('.poço');
             const pocoRect = poco.getBoundingClientRect();
             const aguaRect = document.querySelector('.agua').getBoundingClientRect();
-            
+
             // Verificar se foi solto dentro dos limites do poço
-            if (e.clientX >= pocoRect.left && 
-                e.clientX <= pocoRect.right && 
-                e.clientY >= pocoRect.top && 
+            if (e.clientX >= pocoRect.left &&
+                e.clientX <= pocoRect.right &&
+                e.clientY >= pocoRect.top &&
                 e.clientY <= pocoRect.bottom) {
-                
+
                 const relativeX = Math.min(Math.max(e.clientX - pocoRect.left, 20), pocoRect.width - 40);
                 const relativeY = Math.min(Math.max(e.clientY - pocoRect.top, 20), pocoRect.height - 40);
-                
+
                 const enfeitePosicionado = document.createElement('div');
                 enfeitePosicionado.className = `enfeite ${enfeiteArrastado.getAttribute('data-tipo')} enfeite-posicionado`;
                 enfeitePosicionado.style.setProperty('--cor', enfeiteArrastado.getAttribute('data-cor'));
                 enfeitePosicionado.style.left = relativeX + 'px';
-                
+
                 // Se solto acima da água, iniciar animação de queda
                 if (e.clientY < aguaRect.top) {
                     const inicioY = relativeY;
                     const fimY = aguaRect.top - pocoRect.top - 20; // Ajustar para o tamanho do enfeite
-                    
+
                     enfeitePosicionado.style.setProperty('--inicio-y', inicioY + 'px');
                     enfeitePosicionado.style.setProperty('--fim-y', fimY + 'px');
                     enfeitePosicionado.style.top = inicioY + 'px';
                     enfeitePosicionado.classList.add('caindo');
-                    
+
                     enfeitePosicionado.addEventListener('animationend', () => {
                         enfeitePosicionado.style.top = fimY + 'px';
                         enfeitePosicionado.classList.remove('caindo');
@@ -235,10 +357,10 @@
                     const rotacaoAleatoria = Math.random() * 360;
                     enfeitePosicionado.style.transform = `rotate(${rotacaoAleatoria}deg)`;
                 }
-                
+
                 poco.appendChild(enfeitePosicionado);
             }
-            
+
             // Limpar
             enfeiteArrastado.remove();
             enfeiteArrastado = null;
@@ -254,6 +376,21 @@
             poco.innerHTML = '';
             poco.appendChild(agua);
         }
+
+        function criarFlocoDeNeve() {
+            const floco = document.createElement('div');
+            floco.className = 'flake';
+            const tamanho = Math.random() * 5 + 5; // Tamanho aleatório entre 5 e 10px
+            floco.style.width = `${tamanho}px`;
+            floco.style.height = `${tamanho}px`;
+            floco.style.left = `${Math.random() * 100}vw`; // Posicionamento horizontal aleatório
+            floco.style.animationDuration = `${Math.random() * 5 + 5}s`; // Duração aleatória entre 5 e 10 segundos
+            floco.style.animationDelay = `${Math.random() * 5}s`; // Atraso aleatório
+            document.body.appendChild(floco);
+            setTimeout(() => floco.remove(), 10000); // Remove o floco após 10 segundos
+        }
+        setInterval(criarFlocoDeNeve, 200); 
     </script>
 </body>
+
 </html>
